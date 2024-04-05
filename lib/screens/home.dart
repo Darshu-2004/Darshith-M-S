@@ -1,5 +1,8 @@
 //stful+Enter
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:todo/boxes.dart';
+import 'package:todo/todo.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -20,7 +23,31 @@ class _HomeState extends State<Home> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
-        child: ListView(),
+        child: ValueListenableBuilder<Box<Todo>>(
+          valueListenable: Boxes.getBox().listenable(),
+          builder: (context, box, _) {
+            final contents = box.values.toList().cast<Todo>();
+
+            return Column(children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: contents.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final content = contents[index];
+                    return Card(
+                      child: ListTile(
+                        title: Text(content.text),
+                        onTap: () {
+                          Boxes.getBox().deleteAt(index);
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ]);
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

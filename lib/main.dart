@@ -11,12 +11,14 @@ import 'package:todo/todo.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+  Hive.registerAdapter(TodoAdapter());
+
   await Hive.openBox<Todo>("MyBox");
   await SharedPreferencesMan().init();
   SharedPreferencesMan.i.setappFirstOpen(true);
   debugPrint("${SharedPreferencesMan.i.getappFirstOpen()}");
   runApp(MaterialApp(
-    initialRoute: "/splash",
+    initialRoute: "/",
     routes: {
       "/": (context) => Home(),
       "/add": (context) => addScreen(),
